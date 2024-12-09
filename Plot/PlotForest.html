@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Data Distribution Plot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: 0 auto;">
+        <canvas id="distributionChart" width="500" height="500"></canvas>
+    </div>
+
+    <script>
+        // Fetch the tree data from the PHP script
+        fetch('getForest.php')  // Ensure the correct relative path
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched Tree Data:', data); // Log the fetched data
+
+                // Process the data for plotting
+                const trees = data.map(tree => ({
+                    x: tree.x_coordinate,  // X-coordinate of the tree
+                    y: tree.y_coordinate,  // Y-coordinate of the tree
+                    status: tree.tree_status // Tree status (Cut, Keep, victim)
+                }));
+
+                // Log each tree's status and coordinates
+                trees.forEach(tree => {
+                    console.log(`Tree at (${tree.x}, ${tree.y}) - Status: ${tree.status}`);
+                });
+
+                // Hardcoded test to check if colors are working manually
+                // Here, we manually specify a color
+                const testColor = getColorByStatus('Cut');
+                console.log('Manual Test Color:', testColor); // Should return rgba(0, 0, 255, 0.5)
+
+                // Create the distribution plot
+                const ctx = document.getElementById('distributionChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Tree Distribution',
+                            data: trees.map(tree => ({
+                                x: tree.x,  // X coordinate
+                                y: tree.y,  // Y coordinate
+                                backgroundColor: getColorByStatus(tree.status),  // Color based on status
+                                borderColor: 'black', // Border color for the circles
+                                borderWidth: 1,
+                                radius: 10  // Size of each point
+                            }))
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                min: 0,
+                                max: 500,
+                                title: {
+                                    display: true,
+                                    text: 'X Coordinate'
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: 500,
+                                title: {
+                                    display: true,
+                                    text: 'Y Coordinate'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+
+                // Helper function to assign colors based on tree status
+                function getColorByStatus(status) {
+                    const statusLower = status.trim().toLowerCase();  // Ensure proper casing and no extra spaces
+                    console.log('Checking status for color assignment:', statusLower); // Log status being checked
+
+                    switch (statusLower) {
+                        case 'cut':
+                            console.log('Color for Cut:', 'rgba(0, 0, 255, 0.5)');  // Blue for "Cut"
+                            return 'rgba(0, 0, 255, 0.5)';
+                        case 'victim':
+                            console.log('Color for Victim:', 'rgba(255, 0, 0, 0.5)');  // Red for "victim"
+                            return 'rgba(255, 0, 0, 0.5)';
+                        case 'keep':
+                            console.log('Color for Keep:', 'rgba(0, 255, 0, 0.5)');  // Green for "Keep"
+                            return 'rgba(0, 255, 0, 0.5)';
+                        default:
+                            console.log('Default Color:', 'rgba(0, 255, 0, 0.5)');  // Default to green for any unrecognized status
+                            return 'rgba(0, 255, 0, 0.5)';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching tree data:', error); // Log any errors
+            });
+    </script>
+</body>
+</html>
