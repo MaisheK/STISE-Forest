@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Simulation</title>
+    <!-- <link rel="stylesheet" href="../hutan/styles.css"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 60vh;
+        }
+        header, footer {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    
+</head>
+<body>
+     <!-- Include your header -->
+    <div class="header">
+        <h1>Welcome to the Forest System</h1>
+    </div>
+    <div class="movenav">
+        <marquee id="marquee"></marquee>
+      </div>
+      <script>
+        const marquee = document.getElementById('marquee');
+        let text = '';
+        for (let i = 0; i < 30; i++) {
+          
+        }
+        marquee.innerHTML = text;
+      </script>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="../hutan/homepage.php">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn">Summary</button>
+            <div class="dropdown-content">
+                <a href="../hutan/regim45.php">summary  45</a>
+                <!-- <a href="../hutan/regim50.php">summary  50</a>
+                <a href="../hutan/regime55.php">summary  55</a>
+                <a href="../hutan/regime60.php">summary  60</a>
+                <a href="../hutan/regime65.php">summary  65</a> -->
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Stand Table</button>
+            <div class="dropdown-content">
+                <a href="../hutan/stand_table45.php">stand table 45</a>
+                <!-- <a href="../hutan/stand_table50.php">stand table 50</a>
+                <a href="../hutan/stand_table55.php">stand table 55</a>
+                <a href="../hutan/stand_table60.php">stand table 60</a>
+                <a href="../hutan/stand_table65.php">stand table 65</a> -->
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Distribution</button>
+            <div class="dropdown-content">
+                <a href="../distribution/distribution.html">Distribution 45</a>
+                <!-- <a href="../distriRegime50/distriRegime50.html">Distribution 50</a>
+                <a href="../distriRegime55/distriRegime55.html">Distribution 55</a>
+                <a href="../distriRegime60/distriRegime60.html">Distribution 60</a>
+                <a href="../distriRegime65/distriRegime65.html">Distribution 65</a> -->
+            </div>
+        </div>
+        <!-- <a href="../hutan/barchart3045.php" target="blank">Bar Chart</a> -->
+    </div>
+    <header>
+        <h1>Tree Distribution 45</h1>
+    </header>
+    <div class="box">
+        <div id="forestPlot" style="width: 1000px; height: 1000px; display: flex; justify-content: center; align-items: center; margin: auto;"></div>
+        <div id="tooltip"></div>
+        
+    </div>
+    <div w3-include-html="../hutan/footer.html"></div>
+    <script>
+        function includeHTML() {
+            var z, i, elmnt, file, xhttp;
+            /* Loop through a collection of all HTML elements: */
+            z = document.getElementsByTagName("*");
+            for (i = 0; i < z.length; i++) {
+                elmnt = z[i];
+                /* Search for elements with a certain attribute: */
+                file = elmnt.getAttribute("w3-include-html");
+                if (file) {
+                    /* Make an HTTP request using the attribute value as the file name: */
+                    xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                elmnt.innerHTML = this.responseText;
+                            }
+                            if (this.status == 404) {
+                                elmnt.innerHTML = "Page not found.";
+                            }
+                            /* Remove the attribute and call this function once more: */
+                            elmnt.removeAttribute("w3-include-html");
+                            includeHTML();
+                        }
+                    }
+                    xhttp.open("GET", file, true);
+                    xhttp.send();
+                    /* Exit the function to allow the recursive call: */
+                    return;
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            includeHTML();
+        });
+    </script>
+    <script src="dist.js"></script>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+            let zoomLevel = 1;
+            const zoomFactor = 1.2;
+
+            async function fetchForestData() {
+                try {
+                    const response = await fetch('getForest.php');
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching forest data:', error);
+                    return [];
+                }
+            }
+
+            function plotForest(data) {
+                const keepTrees = data.filter(tree => tree.tree_status === "Keep");
+                const cutTrees = data.filter(tree => tree.tree_status === "Cut");
+                const damagedCrownTrees = data.filter(tree => tree.damage_crown > 0 && tree.tree_status !== "Cut");
+                const damagedStemTrees = data.filter(tree => tree.damage_stem > 0 && tree.tree_status !== "Cut");
+                const cutTreesWithCutAngle = cutTrees.filter(tree => tree.cut_angle !== null && tree.cut_angle !== undefined);
+
+                const treeTraces = [
+                    {
+                        x: keepTrees.map(tree => tree.x * zoomLevel),
+                        y: keepTrees.map(tree => tree.y * zoomLevel),
+                        mode: 'markers',
+                        marker: { color: 'green', size: 5 * zoomLevel },
+                        name: 'Keep'
+                    },
+                    {
+                        x: cutTrees.map(tree => tree.x * zoomLevel),
+                        y: cutTrees.map(tree => tree.y * zoomLevel),
+                        mode: 'markers',
+                        marker: { color: 'red', size: 5 * zoomLevel },
+                        name: 'Cut'
+                    },
+                    {
+                        x: damagedCrownTrees.map(tree => tree.x * zoomLevel),
+                        y: damagedCrownTrees.map(tree => tree.y * zoomLevel),
+                        mode: 'markers',
+                        marker: { color: 'yellow', size: 5 * zoomLevel },
+                        name: 'Damaged Crown'
+                    },
+                    {
+                        x: damagedStemTrees.map(tree => tree.x * zoomLevel),
+                        y: damagedStemTrees.map(tree => tree.y * zoomLevel),
+                        mode: 'markers',
+                        marker: { color: 'orange', size: 5 * zoomLevel },
+                        name: 'Damaged Stem'
+                    }
+                ];
+
+                const lineTraces = cutTreesWithCutAngle.map(tree => {
+                    const startX = tree.x * zoomLevel;
+                    const startY = tree.y * zoomLevel;
+                    const endX = startX + Math.cos(tree.cut_angle) * 10 * zoomLevel;
+                    const endY = startY + Math.sin(tree.cut_angle) * 10 * zoomLevel;
+
+                    return {
+                        x: [startX, endX],
+                        y: [startY, endY],
+                        mode: 'lines',
+                        line: { color: 'red', width: 2 },
+                        name: 'Cut Angle'
+                    };
+                });
+
+                const layout = {
+                    title: 'Forest Simulation',
+                    xaxis: { title: 'X' },
+                    yaxis: { title: 'Y' },
+                    showlegend: true
+                };
+
+                Plotly.newPlot('forestPlot', [...treeTraces, ...lineTraces], layout);
+            }
+
+            function zoomIn() {
+                zoomLevel *= zoomFactor;
+                redraw();
+            }
+
+            function zoomOut() {
+                const newZoomLevel = zoomLevel / zoomFactor;
+                if (newZoomLevel >= 0.1) {
+                    zoomLevel = newZoomLevel;
+                    redraw();
+                }
+            }
+
+            async function redraw() {
+                const forestData = await fetchForestData();
+                plotForest(forestData);
+            }
+
+          
+
+            redraw();
+        });
+    </script>
+</body>
+</html>

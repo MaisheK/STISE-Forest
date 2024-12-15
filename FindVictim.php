@@ -1,5 +1,5 @@
 <?php
-
+ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
 // Database connection settings
 DEFINE ('DB_USER', 'root');
 DEFINE ('DB_PASSWORD', '');

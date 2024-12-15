@@ -69,7 +69,7 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     else if ($J == 2) $diameter = rand(1500, 3000) / 100;
                     else if ($J == 3) $diameter = rand(3000, 4500) / 100;
                     else if ($J == 4) $diameter = rand(4500, 6000) / 100;
-                    else if ($J == 5) $diameter = rand(6000, 20000) / 100;
+                    else if ($J == 5) $diameter = rand(6000, 12000) / 100;
 
                     // Determine Height
                     if ($J == 1) $height = rand(250, 550) / 100;
@@ -110,11 +110,11 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     $sql = "INSERT INTO tree_data (
                         blockx, blocky, x_coordinate, y_coordinate, treenum, 
                         species, diameter, height, volume, spgroup, 
-                        diameterclass, tree_status, PROD, cut_angle, damage
+                        diameterclass, tree_status, PROD, cut_angle, damage_stem, damage_crown
                     ) VALUES (
                         $blockx, $blocky, $x, $y, '$TreeNum', 
                         '$species', $diameter, $height, $volume, $SPEC_Gr, 
-                        $diameterclass, '$status', $prod, " . ($cut_angle !== null ? $cut_angle : "NULL") . ", NULL
+                        $diameterclass, '$status', $prod, " . ($cut_angle !== null ? $cut_angle : "NULL") . ", NULL, NULL
                     )";                    
             
                     // Debugging output

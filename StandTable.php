@@ -16,7 +16,7 @@ $categories = [
     [15, 30], // Category 2: Diameter 15-30
     [30, 45], // Category 3: Diameter 30-45
     [45, 60], // Category 4: Diameter 45-60
-    [60, PHP_INT_MAX] // Category 5: Diameter 60+
+    [60, 120] // Category 5: Diameter 60+
 ];
 
 $speciesGroups = [1, 2, 3, 4, 5, 6, 7]; // Spgroup IDs
