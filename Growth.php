@@ -1,4 +1,6 @@
 <?php
+ini_set('max_execution_time', 900);
+
 DEFINE ('DB_USER', 'root');
 DEFINE ('DB_PASSWORD', '');
 DEFINE ('DB_HOST', 'localhost');
@@ -39,13 +41,15 @@ if (mysqli_num_rows($result) > 0) {
 
         // Insert query
         $sql1 = "
-                UPDATE tree_data r
-                JOIN damagetree d ON r.Id = d.cut_tree
-                SET r.Growth_D30 = '$newDiameter', r.Volume30 = '$volume30'
-                WHERE r.Id = '$id' 
-                AND r.tree_status != 'Cut' 
-                AND d.damage_category != 1
-            ";
+            UPDATE tree_data
+            SET 
+                Growth_D30 = '$newDiameter',
+                Volume30 = '$volume30',
+                PROD30 = '$volume30'
+            WHERE Id = '$id' 
+            AND tree_status != 'Cut'
+            And damage_stem = 0 
+        ";      
 
         $result1 = mysqli_query($dbc, $sql1);
     }

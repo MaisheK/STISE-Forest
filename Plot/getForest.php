@@ -10,7 +10,7 @@ $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) OR die ('Could not
 mysqli_set_charset($dbc, 'utf8');
 
 //$sql = "SELECT Diameter, status_tree, x, y FROM newforestori";
-$sql = "SELECT tree_status, damage_crown, damage_stem, cut_angle, x_coordinate AS x, y_coordinate AS y FROM tree_data WHERE diameter > 45";
+$sql = "SELECT tree_status, damage_crown, damage_stem, cut_angle, x_coordinate AS x, y_coordinate AS y FROM tree_data WHERE diameter > 30";
 // Modified SQL query to filter by BlockX = 1 and BlockY = 1
 //$sql = "SELECT status_tree, x, y FROM newforestori WHERE BlockX = 1 AND BlockY = 2 AND Diameter>30";
 $result = mysqli_query($dbc, $sql);

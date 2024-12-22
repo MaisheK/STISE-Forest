@@ -33,6 +33,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     if (!$insert_result) {
         die('Error inserting into victim table: ' . mysqli_error($dbc));
     }
+
 }
 
 // After all data is inserted, output a success message

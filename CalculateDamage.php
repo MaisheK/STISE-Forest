@@ -26,21 +26,26 @@ while ($row = mysqli_fetch_assoc($result)) {
     // Split coordinates into x and y
     list($victim_x, $victim_y) = explode(',', $victim_coordinates);
 
-    // Generate random volumes
+    // Initialize damage values
     $damage_crown = 0;
     $damage_stem = 0;
 
-    if ($damage_category == 1) {
-        // Assign a random crown volume between 1 and 10
-        $damage_crown = rand(1, 10);
-    } elseif ($damage_category == 2) {
-        // Assign a random stem volume between 1 and 100
-        $damage_stem = rand(1, 100);
+    if ($damage_category == 2) {
+        // Assign crown damage: Random percentage between 0 and 50% of volume range 1-10 m³
+        $percentage_crown = rand(0, 50); // Percentage between 0 and 50%
+        $damage_crown = (rand(1, 10) * $percentage_crown) / 100; // Applying percentage to the volume
+    } elseif ($damage_category == 1) {
+        // Assign stem damage: Random percentage between 1 and 100% of volume range 1-100 m³
+        $percentage_stem = rand(1, 100); // Percentage between 1 and 100%
+        $damage_stem = (rand(1, 100) * $percentage_stem) / 100; // Applying percentage to the volume
     }
 
     // Update the `tree_data` table with the random volumes
     $update_query = "UPDATE tree_data 
-                     SET damage_crown = $damage_crown, damage_stem = $damage_stem 
+                     SET 
+                     damage_crown = $damage_crown, 
+                     damage_stem = $damage_stem,
+                     tree_status = IF($damage_crown > 0, 'victim', tree_status) 
                      WHERE x_coordinate = $victim_x AND y_coordinate = $victim_y";
 
     $update_result = mysqli_query($dbc, $update_query);

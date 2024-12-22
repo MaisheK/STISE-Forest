@@ -99,11 +99,11 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
 
                     // Determine Status and Cut Angle
                     $status = 'Keep';
-                    $prod = 0;
+                    $prod = $volume;
                     $cut_angle = 0; // Default value
                     if (in_array($SPEC_Gr, [1, 2, 3, 5]) && $diameter > 45) {
                         $status = 'Cut';
-                        $prod = round(rand(80, 120) / 100 * $volume, 2);
+                        $prod = 0;
                         $cut_angle = rand(0, 360); // Randomized cut angle
                     }
 
