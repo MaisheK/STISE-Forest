@@ -100,7 +100,7 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     $status = 'Keep';
                     $prod = 0;
                     $cut_angle = 0; // Default value
-                    if (in_array($SPEC_Gr, [1, 2, 3, 5]) && $diameter > 45) {
+                    if (in_array($SPEC_Gr, [1, 2, 3, 5]) && $diameter > 50) {
                         $status = 'Cut';
                         $prod = $volume;
                         $cut_angle = rand(0, 360); // Randomized cut angle
@@ -112,7 +112,7 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     $PROD30 = $volume30;
 
                     // Insert tree data with updated values for Growth_D30 and Volume30
-                    $sql = "INSERT INTO tree_data (
+                    $sql = "INSERT INTO forest50 (
                         blockx, blocky, x_coordinate, y_coordinate, treenum, 
                         species, diameter, height, volume, spgroup, 
                         diameterclass, tree_status, PROD, cut_angle, damage_stem, damage_crown,

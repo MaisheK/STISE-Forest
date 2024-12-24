@@ -47,7 +47,7 @@ $speciesData = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stand Table Year 0</title>
+    <title>Stand Table Year 30</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -99,7 +99,7 @@ $speciesData = [
 </head>
 <body>
     <div class="container">
-        <h1>Stand Table Year 0</h1>
+        <h1>Stand Table Year 30</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover table-forest">
                 <thead>
@@ -127,24 +127,24 @@ $speciesData = [
                         $totalTreesSpecies = 0;
                         $totalVolumeSpecies = 0;
 
-                        // Volume row
+                        // Volume row for Year 30
                         echo "<tr>";
                         echo "<td rowspan='2'>$speciesName</td>";
                         echo "<td rowspan='2'>Group $spgroup</td>";
 
                         foreach ($categories as $category) {
                             list($minDiameter, $maxDiameter) = $category;
-                            $sql = "SELECT SUM(volume) AS totalVolume
+                            $sql = "SELECT SUM(Volume30) AS totalVolume
                                     FROM tree_data
                                     WHERE spgroup = $spgroup
-                                    AND diameter >= $minDiameter
-                                    AND diameter <= $maxDiameter
+                                    AND Growth_D30 >= $minDiameter
+                                    AND Growth_D30 <= $maxDiameter
                                     AND blockx = 1
                                     AND blocky = 1";
                             $result = mysqli_query($dbc, $sql);
                             $row = mysqli_fetch_assoc($result);
 
-                            $totalVolume = $row['totalVolume'];
+                            $totalVolume = $row['totalVolume'] ?: 0;
                             $totalVolumeSpecies += $totalVolume;
 
                             $totalVolumeByCategory["$minDiameter-$maxDiameter"] += $totalVolume;
@@ -155,21 +155,21 @@ $speciesData = [
                         echo "<td class='volume-cell'>" . number_format($totalVolumeSpecies, 2) . "</td>";
                         echo "</tr>";
 
-                        // Trees row
+                        // Trees row for Year 30
                         echo "<tr>";
                         foreach ($categories as $category) {
                             list($minDiameter, $maxDiameter) = $category;
                             $sql = "SELECT COUNT(*) AS totalTrees
                                     FROM tree_data
                                     WHERE spgroup = $spgroup
-                                    AND diameter >= $minDiameter
-                                    AND diameter <= $maxDiameter
+                                    AND Growth_D30 >= $minDiameter
+                                    AND Growth_D30 <= $maxDiameter
                                     AND blockx = 1
                                     AND blocky = 1";
                             $result = mysqli_query($dbc, $sql);
                             $row = mysqli_fetch_assoc($result);
 
-                            $totalTrees = $row['totalTrees'];
+                            $totalTrees = $row['totalTrees'] ?: 0;
                             $totalTreesSpecies += $totalTrees;
 
                             $totalTreesByCategory["$minDiameter-$maxDiameter"] += $totalTrees;

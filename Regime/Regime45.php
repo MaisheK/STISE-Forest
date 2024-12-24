@@ -80,13 +80,13 @@ $speciesData = [
                     <tr>
                         <th>Species Name</th>
                         <th>Species Group</th>
-                        <th>Production</th>
-                        <th>Total Tree</th>
-                        <th>Damage Crown</th>
-                        <th>Damage Stem</th>
-                        <th>Growth30</th>
+                        <th>Total Volume 0</th>
+                        <th>Total Number 0</th>
+                        <th>Production 0</th>
+                        <th>Damage 0</th>
                         <th>Remaining Trees</th>
-                        <th>PROD30</th>
+                        <th>Growth 30</th>
+                        <th>Production 30</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,36 +97,36 @@ $speciesData = [
 
                         // Queries to calculate the respective values
                         $sql = "SELECT 
-                                    SUM(volume) AS totalProduction, 
+                                    SUM(volume) AS totalVolume, 
                                     COUNT(*) AS totalTree,
-                                    SUM(damage_crown) AS damageCrown,
-                                    SUM(damage_stem) AS damageStem,
-                                    SUM(Growth_D30) AS totalGrowth30,
+                                    SUM(prod) AS prod0,
+                                    SUM(CASE WHEN (damage_stem IS NOT NULL AND damage_stem > 0) OR (damage_crown IS NOT NULL AND damage_crown > 0) THEN 1 ELSE 0 END) AS damage,
                                     SUM(CASE WHEN tree_status = 'keep' THEN 1 ELSE 0 END) AS remainingTrees,
+                                    SUM(Growth_D30) AS totalGrowth30,
                                     SUM(PROD30) AS totalProd30
                                 FROM tree_data
                                 WHERE spgroup = $spgroup";
                         $result = mysqli_query($dbc, $sql);
                         $row = mysqli_fetch_assoc($result);
 
-                        $totalProduction = $row['totalProduction'] ?? 0;
+                        $totalVolume = $row['totalVolume'] ?? 0;
                         $totalTree = $row['totalTree'] ?? 0;
-                        $damageCrown = $row['damageCrown'] ?? 0;
-                        $damageStem = $row['damageStem'] ?? 0;
-                        $growth30 = $row['totalGrowth30'] ?? 0;
+                        $prod0 = $row['prod0'] ?? 0;
+                        $damage = $row['damage'] ?? 0;
                         $remainingTrees = $row['remainingTrees'] ?? 0;
+                        $growth30 = $row['totalGrowth30'] ?? 0;
                         $prod30 = $row['totalProd30'] ?? 0;
 
                         // Display the row
                         echo "<tr>";
                         echo "<td>$speciesName</td>";
                         echo "<td>Group $spgroup</td>";
-                        echo "<td>" . number_format($totalProduction, 2) . "</td>";
+                        echo "<td>" . number_format($totalVolume, 2) . "</td>";
                         echo "<td>" . number_format($totalTree) . "</td>";
-                        echo "<td>" . number_format($damageCrown, 2) . "</td>";
-                        echo "<td>" . number_format($damageStem, 2) . "</td>";
-                        echo "<td>" . number_format($growth30, 2) . "</td>";
+                        echo "<td>" . number_format($prod0, 2) . "</td>";
+                        echo "<td>" . number_format($damage, 2) . "</td>";
                         echo "<td>" . number_format($remainingTrees) . "</td>";
+                        echo "<td>" . number_format($growth30, 2) . "</td>";
                         echo "<td>" . number_format($prod30, 2) . "</td>";
                         echo "</tr>";
                     }
