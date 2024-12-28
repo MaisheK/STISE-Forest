@@ -68,7 +68,7 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     else if ($J == 2) $diameter = rand(1500, 3000) / 100;
                     else if ($J == 3) $diameter = rand(3000, 4500) / 100;
                     else if ($J == 4) $diameter = rand(4500, 6000) / 100;
-                    else if ($J == 5) $diameter = rand(6000, 12000) / 100;
+                    else if ($J == 5) $diameter = rand(6000, 10000) / 100;
 
                     // Determine Height
                     if ($J == 1) $height = rand(250, 550) / 100;
@@ -91,8 +91,14 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     $y = ($blocky - 1) * 100 + $locationy;
 
                     // Generate TreeNum
-                    $TreeNum = 'T' . $blockx . $blocky . $x . $y;
+                    $blockx = str_pad($blockx, 2, '0', STR_PAD_LEFT); // Ensures $blockx has 2 digits
+                    $blocky = str_pad($blocky, 2, '0', STR_PAD_LEFT); // Ensures $blocky has 2 digits
+                    $x = str_pad($x, 3, '0', STR_PAD_LEFT);          // Ensures $x has 3 digits
+                    $y = str_pad($y, 3, '0', STR_PAD_LEFT);          // Ensures $y has 3 digits
 
+                    $TreeNum = 'T' . $blockx . $blocky . $x . $y;    // Concatenate to form $TreeNum
+
+                    //Label species group and diameter class
                     $SPEC_Gr = $I;
                     $diameterclass = $J;
 
@@ -100,19 +106,14 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     $status = 'Keep';
                     $prod = 0;
                     $cut_angle = 0; // Default value
-                    if (in_array($SPEC_Gr, [1, 2, 3, 5]) && $diameter > 45) {
+                    if (in_array($SPEC_Gr, [1, 2, 3, 5]) && $diameter > 55) {
                         $status = 'Cut';
                         $prod = $volume;
                         $cut_angle = rand(0, 360); // Randomized cut angle
                     }
 
-                    // Calculate Growth and Volume after 30 years
-                    $newDiameter = calculateNewDiameter($diameter);
-                    $volume30 = calculateVolume30($newDiameter, $SPEC_Gr);
-                    $PROD30 = $volume30;
-
                     // Insert tree data with updated values for Growth_D30 and Volume30
-                    $sql = "INSERT INTO tree_data (
+                    $sql = "INSERT INTO forest55 (
                         blockx, blocky, x_coordinate, y_coordinate, treenum, 
                         species, diameter, height, volume, spgroup, 
                         diameterclass, tree_status, PROD, cut_angle, damage_stem, damage_crown,
@@ -120,9 +121,7 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     ) VALUES (
                         $blockx, $blocky, $x, $y, '$TreeNum', 
                         '$species', $diameter, $height, $volume, $SPEC_Gr, 
-                        $diameterclass, '$status'," . number_format($prod, 2) . ", " . ($cut_angle !== null ? $cut_angle : "NULL") . ", NULL, NULL,
-                        " . number_format($newDiameter, 2) . ",
-                        " . number_format($volume30, 2) . ", " . number_format($PROD30, 2) . "
+                        $diameterclass, '$status'," . number_format($prod, 2) . ", " . ($cut_angle !== null ? $cut_angle : "NULL") . ", NULL, NULL, NULL, NULL, NULL
                     )";
 
                     if ($dbc->query($sql) !== TRUE) {
@@ -137,31 +136,4 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
 // Close the connection
 mysqli_close($dbc);
 
-// Function to calculate new diameter after 30 years
-function calculateNewDiameter($diameter) {
-    for($year = 1; $year <= 30; $year++){
-        if ($diameter >= 5 && $diameter <= 15) {
-            $diameter += 0.4;
-        } elseif ($diameter > 15 && $diameter <= 30) {
-            $diameter += 0.6;
-        } elseif ($diameter > 30 && $diameter <= 45) {
-            $diameter += 0.5;
-        } elseif ($diameter > 45 && $diameter <= 60) {
-            $diameter += 0.4;
-        } elseif ($diameter > 60) {
-            $diameter += 0.5;
-        } 
-    }
-    return $diameter;
-}
-
-// Function to calculate volume at diameter 30
-function calculateVolume30($newDiameter, $SPEC_Gr) {
-    if (in_array($SPEC_Gr, [1, 2, 3, 4])) {
-        $volume30 = -0.0971 + 9.503 * pow($newDiameter / 100, 2);
-    } else {
-        $volume30 = -0.331 + 6.694 * pow($newDiameter / 100, 2);
-    }
-    return $volume30;
-}
 ?>

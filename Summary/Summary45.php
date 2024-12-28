@@ -31,6 +31,7 @@ $speciesData = [
     <title>Forest Stand Table</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Add your custom styles */
         body {
             background-color: #f4f6f9;
             padding-top: 30px;
@@ -48,26 +49,11 @@ $speciesData = [
             background-color: #2c8d3b;
             color: white;
         }
-        .table-forest thead th {
-            vertical-align: middle;
-            text-align: center;
-            font-weight: 600;
-            border-bottom: 2px solid #218838;
-        }
         .table-forest tbody tr:nth-child(even) {
             background-color: #f2f9f3;
         }
         .table-forest tbody tr:hover {
             background-color: #e6f3e7;
-        }
-        .table-forest tfoot {
-            font-weight: bold;
-            background-color: #e9ecef;
-        }
-        h1 {
-            color: #2c8d3b;
-            margin-bottom: 20px;
-            text-align: center;
         }
     </style>
 </head>
@@ -83,7 +69,7 @@ $speciesData = [
                         <th>Total Volume 0</th>
                         <th>Total Number 0</th>
                         <th>Production 0</th>
-                        <th>Damage 0</th>
+                        <th>Damage</th>
                         <th>Remaining Trees</th>
                         <th>Growth 30</th>
                         <th>Production 30</th>
@@ -95,15 +81,13 @@ $speciesData = [
                         $speciesName = $species[0];
                         $spgroup = $species[1];
 
-                        // Queries to calculate the respective values
+                        // Query for main metrics
                         $sql = "SELECT 
                                     SUM(volume) AS totalVolume, 
                                     COUNT(*) AS totalTree,
                                     SUM(prod) AS prod0,
-                                    SUM(CASE WHEN (damage_stem IS NOT NULL AND damage_stem > 0) OR (damage_crown IS NOT NULL AND damage_crown > 0) THEN 1 ELSE 0 END) AS damage,
                                     SUM(CASE WHEN tree_status = 'keep' THEN 1 ELSE 0 END) AS remainingTrees,
-                                    SUM(Growth_D30) AS totalGrowth30,
-                                    SUM(PROD30) AS totalProd30
+                                    SUM(Growth_D30) AS totalGrowth30
                                 FROM tree_data
                                 WHERE spgroup = $spgroup";
                         $result = mysqli_query($dbc, $sql);
@@ -112,10 +96,27 @@ $speciesData = [
                         $totalVolume = $row['totalVolume'] ?? 0;
                         $totalTree = $row['totalTree'] ?? 0;
                         $prod0 = $row['prod0'] ?? 0;
-                        $damage = $row['damage'] ?? 0;
                         $remainingTrees = $row['remainingTrees'] ?? 0;
                         $growth30 = $row['totalGrowth30'] ?? 0;
-                        $prod30 = $row['totalProd30'] ?? 0;
+
+                        // Query for damage (tree_status = 'victim')
+                        $sqlDamage = "SELECT 
+                                        COUNT(*) AS totalDamage
+                                      FROM tree_data
+                                      WHERE spgroup = $spgroup
+                                      AND tree_status = 'victim'";
+                        $resultDamage = mysqli_query($dbc, $sqlDamage);
+                        $damageRow = mysqli_fetch_assoc($resultDamage);
+                        $damage = $damageRow['totalDamage'] ?? 0;
+
+                        // Query for PROD30 based on Growth_D30
+                        $sqlProd30 = "SELECT 
+                                        SUM(PROD30) AS totalProd30
+                                      FROM tree_data
+                                      WHERE spgroup = $spgroup";
+                        $resultProd30 = mysqli_query($dbc, $sqlProd30);
+                        $prod30Row = mysqli_fetch_assoc($resultProd30);
+                        $prod30 = $prod30Row['totalProd30'] ?? 0;
 
                         // Display the row
                         echo "<tr>";
@@ -124,7 +125,7 @@ $speciesData = [
                         echo "<td>" . number_format($totalVolume, 2) . "</td>";
                         echo "<td>" . number_format($totalTree) . "</td>";
                         echo "<td>" . number_format($prod0, 2) . "</td>";
-                        echo "<td>" . number_format($damage, 2) . "</td>";
+                        echo "<td>" . number_format($damage) . "</td>";
                         echo "<td>" . number_format($remainingTrees) . "</td>";
                         echo "<td>" . number_format($growth30, 2) . "</td>";
                         echo "<td>" . number_format($prod30, 2) . "</td>";

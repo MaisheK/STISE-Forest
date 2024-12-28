@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stand Table 45</title>
+    <title>Stand Table 50</title>
     <style>
         * {
             box-sizing: border-box;
@@ -99,7 +99,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Stand Table 45</h1>
+        <h1>Stand Table 50</h1>
         <div class="filters">
             <input type="text" id="searchInput" class="search-input" placeholder="Search species...">
             <select id="metricSelect">
@@ -173,7 +173,7 @@
                                             SUM(PROD) AS totalProduction,
                                             COUNT(IF(tree_status = 'victim', 1, NULL)) AS totalDamage,
                                             SUM(Growth_D30) AS totalGrowth30
-                                        FROM tree_data
+                                        FROM forest50
                                         WHERE spgroup = $spgroup
                                         AND diameter BETWEEN $minDiameter AND $maxDiameter
                                         AND blockx = 1 AND blocky = 1";
@@ -184,7 +184,7 @@
                             // Second query for PROD30 based on Growth_D30
                             $sqlMetricsGrowthD30 = "SELECT 
                                             SUM(PROD30) AS totalProduction30
-                                        FROM tree_data
+                                        FROM forest50
                                         WHERE spgroup = $spgroup
                                         AND Growth_D30 BETWEEN $minDiameter AND $maxDiameter
                                         AND blockx = 1 AND blocky = 1";
