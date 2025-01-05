@@ -87,7 +87,7 @@ $speciesData = [
                                     COUNT(*) AS totalTree,
                                     SUM(prod) AS prod0,
                                     SUM(CASE WHEN tree_status = 'keep' THEN 1 ELSE 0 END) AS remainingTrees,
-                                    SUM(Growth_D30) AS totalGrowth30
+                                    SUM(Volume30) AS totalGrowth30
                                 FROM forest60
                                 WHERE spgroup = $spgroup";
                         $result = mysqli_query($dbc, $sql);

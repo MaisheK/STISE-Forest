@@ -12,7 +12,7 @@ $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) OR die('Could not 
 mysqli_set_charset($dbc, 'utf8');
 
 // Step 1: Transfer data from `damagetree50` to `victim55`
-$query = "SELECT cut_tree, victim, damage_category, treenum FROM damagetree50";
+$query = "SELECT cut_tree, victim, damage_category, treenum FROM damagetree55";
 $result = mysqli_query($dbc, $query);
 
 if (!$result) {
