@@ -91,10 +91,20 @@ function calculateNewDiameter($diameter) {
 
 function calculateVolume30($newDiameter, $speciesgroup) {
     // Calculate the volume of the tree after 30 years
+    $D = number_format(($newDiameter / 100), 2);
+
     if (in_array($speciesgroup, [1, 2, 3, 4])) {
-        return -0.0971 + 9.503 * pow($newDiameter / 100, 2);
+        if ($D < 15) {
+           return 0.022 + (3.4 * pow($D, 2));
+        } else {
+            return -0.0971 + 9.503 * pow($D, 2);
+        }
     } elseif (in_array($speciesgroup, [5, 6, 7])) {
-        return -0.331 + 6.694 * pow($newDiameter / 100, 2);
+        if ($D < 15) {
+            return 0.03 + (2.8 * pow($D, 2));
+        } else {
+            return -0.331 + 6.694 * pow($D, 2);
+        }
     } else {
         return "Invalid Species group";
     }

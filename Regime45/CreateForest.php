@@ -78,10 +78,23 @@ for ($IX = 1; $IX <= $NoBlockX; $IX++) {
                     else if ($J == 5) $height = rand(1500, 4000) / 100;
 
                     // Calculate Volume based on Species Group
+                        // Convert to meters
+                        $D = number_format(($diameter / 100), 2);
+                        $H = number_format(($height), 2);
+
+
                     if (in_array($I, [1, 2, 3, 4])) {
-                        $volume = 0.015 + 2.137 * pow($diameter / 100, 2) + 0.513 * pow($diameter / 100, 2) * $height;
-                    } else {
-                        $volume = -0.0023 + 2.942 * pow($diameter / 100, 2) + 0.262 * pow($diameter / 100, 2) * $height;
+                        if ($D < 15) {
+                            $volume = 0.022 + (3.4 * pow($D, 2));
+                        } else {
+                            $volume = 0.015 + (2.137 * pow($D, 2)) + (0.513 * pow($D, 2) * $H);
+                        }
+                    } else { // Non-Dipterocarp groups (Group 5, 6, 7)
+                        if ($D < 15) {
+                            $volume = 0.03 + (2.8 * pow($D, 2));
+                        } else {
+                            $volume = -0.0023 + (2.942 * pow($D, 2)) + (0.262 * pow($D, 2) * $H);
+                        }
                     }
 
                     // Determine Location

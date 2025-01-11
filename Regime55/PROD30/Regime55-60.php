@@ -10,7 +10,7 @@ DEFINE ('DB_NAME', 'forest');
 $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) OR die ('Could not connect to MySQL: ' . mysqli_connect_error());
 mysqli_set_charset($dbc, 'utf8');
 
-$sql = "SELECT * FROM Forest50";
+$sql = "SELECT * FROM regime5560";
 $result = mysqli_query($dbc, $sql);
 
 // Output display
@@ -49,7 +49,7 @@ if (mysqli_num_rows($result) > 0) {
 
         // Update query
         $sql1 = "
-            UPDATE Forest50
+            UPDATE regime5560
             SET 
                 Growth_D30 = ".number_format($newDiameter, 2).",
                 Volume30 = ".number_format($volume30, 2).",
@@ -115,7 +115,7 @@ function determineStatusLogic($newDiameter, $volume30, $speciesgroup) {
     $status30 = 'Keep';
     $prod30 = 0;
 
-    if ($newDiameter > 50 && in_array($speciesgroup, [1, 2, 3, 5])) {
+    if ($newDiameter > 60 && in_array($speciesgroup, [1, 2, 3, 5])) {
         $status30 = 'Cut';
         $prod30 = $volume30;
     }

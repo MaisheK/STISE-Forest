@@ -59,7 +59,7 @@ $speciesData = [
 </head>
 <body>
     <div class="container">
-        <h1>Final Output Regime 55</h1>
+        <h1>Final Output Regime 55 - 45</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover table-forest">
                 <thead>
@@ -88,35 +88,35 @@ $speciesData = [
                                     SUM(prod) AS prod0,
                                     SUM(CASE WHEN tree_status = 'keep' THEN 1 ELSE 0 END) AS remainingTrees,
                                     SUM(Volume30) AS totalGrowth30
-                                FROM forest55
+                                FROM regime5545
                                 WHERE spgroup = $spgroup";
                         $result = mysqli_query($dbc, $sql);
                         $row = mysqli_fetch_assoc($result);
 
-                        $totalVolume = $row['totalVolume'] ?? 0;
-                        $totalTree = $row['totalTree'] ?? 0;
-                        $prod0 = $row['prod0'] ?? 0;
-                        $remainingTrees = $row['remainingTrees'] ?? 0;
-                        $growth30 = $row['totalGrowth30'] ?? 0;
+                        $totalVolume = $row['totalVolume'] / 100 ?? 0;
+                        $totalTree = $row['totalTree'] / 100 ?? 0;
+                        $prod0 = $row['prod0'] / 100 ?? 0;
+                        $remainingTrees = $row['remainingTrees'] / 100 ?? 0;
+                        $growth30 = $row['totalGrowth30'] / 100 ?? 0;
 
                         // Query for damage (tree_status = 'victim')
                         $sqlDamage = "SELECT 
                                         COUNT(*) AS totalDamage
-                                      FROM forest55
+                                      FROM regime5545
                                       WHERE spgroup = $spgroup
                                       AND tree_status = 'victim'";
                         $resultDamage = mysqli_query($dbc, $sqlDamage);
                         $damageRow = mysqli_fetch_assoc($resultDamage);
-                        $damage = $damageRow['totalDamage'] ?? 0;
+                        $damage = $damageRow['totalDamage'] / 100 ?? 0;
 
                         // Query for PROD30 based on Growth_D30
                         $sqlProd30 = "SELECT 
                                         SUM(PROD30) AS totalProd30
-                                      FROM forest55
+                                      FROM regime5545
                                       WHERE spgroup = $spgroup";
                         $resultProd30 = mysqli_query($dbc, $sqlProd30);
                         $prod30Row = mysqli_fetch_assoc($resultProd30);
-                        $prod30 = $prod30Row['totalProd30'] ?? 0;
+                        $prod30 = $prod30Row['totalProd30'] / 100 ?? 0;
 
                         // Display the row
                         echo "<tr>";

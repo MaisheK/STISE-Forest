@@ -10,7 +10,7 @@ DEFINE ('DB_NAME', 'forest');
 $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) OR die ('Could not connect to MySQL: ' . mysqli_connect_error());
 mysqli_set_charset($dbc, 'utf8');
 
-$sql = "SELECT * FROM Forest50";
+$sql = "SELECT * FROM regime4550";
 $result = mysqli_query($dbc, $sql);
 
 // Output display
@@ -49,7 +49,7 @@ if (mysqli_num_rows($result) > 0) {
 
         // Update query
         $sql1 = "
-            UPDATE Forest50
+            UPDATE regime4550
             SET 
                 Growth_D30 = ".number_format($newDiameter, 2).",
                 Volume30 = ".number_format($volume30, 2).",

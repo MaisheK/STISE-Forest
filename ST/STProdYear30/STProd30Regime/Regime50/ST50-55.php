@@ -47,7 +47,7 @@ $speciesData = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stand Table Production30 50</title>
+    <title>Stand Table Production Y0 50 Y30 55</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -99,7 +99,7 @@ $speciesData = [
 </head>
 <body>
     <div class="container">
-        <h1>Stand Table Production30 50</h1>
+        <h1>Stand Table Production Y0 50 Y30 55</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover table-forest">
                 <thead>
@@ -135,15 +135,13 @@ $speciesData = [
                         foreach ($categories as $category) {
                             list($minDiameter, $maxDiameter) = $category;
                             $sql = "SELECT SUM(PROD30) AS totalVolume
-                                    FROM forest50
+                                    FROM regime5055
                                     WHERE spgroup = $spgroup
-                                    AND Growth_D30 BETWEEN $minDiameter AND $maxDiameter
-                                    AND blockx = 1
-                                    AND blocky = 1";
+                                    AND Growth_D30 BETWEEN $minDiameter AND $maxDiameter";
                             $result = mysqli_query($dbc, $sql);
                             $row = mysqli_fetch_assoc($result);
 
-                            $totalVolume = $row['totalVolume'];
+                            $totalVolume = $row['totalVolume'] / 100;
                             $totalVolumeSpecies += $totalVolume;
 
                             $totalVolumeByCategory["$minDiameter-$maxDiameter"] += $totalVolume;
@@ -159,16 +157,14 @@ $speciesData = [
                         foreach ($categories as $category) {
                             list($minDiameter, $maxDiameter) = $category;
                             $sql = "SELECT COUNT(*) AS totalTrees
-                                    FROM forest50
+                                    FROM regime5055
                                     WHERE spgroup = $spgroup
                                     AND Growth_D30 BETWEEN $minDiameter AND $maxDiameter
-                                    AND blockx = 1
-                                    AND blocky = 1
                                     AND Status30 = 'Cut'";
                             $result = mysqli_query($dbc, $sql);
                             $row = mysqli_fetch_assoc($result);
 
-                            $totalTrees = $row['totalTrees'];
+                            $totalTrees = $row['totalTrees'] / 100;
                             $totalTreesSpecies += $totalTrees;
 
                             $totalTreesByCategory["$minDiameter-$maxDiameter"] += $totalTrees;

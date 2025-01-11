@@ -138,13 +138,11 @@ $speciesData = [
                                     FROM forest60
                                     WHERE spgroup = $spgroup
                                     AND diameter BETWEEN $minDiameter AND $maxDiameter
-                                    AND blockx = 1
-                                    AND blocky = 1
                                     AND tree_status = 'victim'";
                             $result = mysqli_query($dbc, $sql);
                             $row = mysqli_fetch_assoc($result);
 
-                            $totalVolume = $row['totalVolume'];
+                            $totalVolume = $row['totalVolume'] / 100;
                             $totalVolumeSpecies += $totalVolume;
 
                             $totalVolumeByCategory["$minDiameter-$maxDiameter"] += $totalVolume;
@@ -163,13 +161,11 @@ $speciesData = [
                                     FROM forest60
                                     WHERE spgroup = $spgroup
                                     AND diameter BETWEEN $minDiameter AND $maxDiameter
-                                    AND blockx = 1
-                                    AND blocky = 1
                                     AND tree_status = 'victim'";
                             $result = mysqli_query($dbc, $sql);
                             $row = mysqli_fetch_assoc($result);
 
-                            $totalTrees = $row['totalTrees'];
+                            $totalTrees = $row['totalTrees'] / 100;
                             $totalTreesSpecies += $totalTrees;
 
                             $totalTreesByCategory["$minDiameter-$maxDiameter"] += $totalTrees;
